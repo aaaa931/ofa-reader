@@ -1,30 +1,31 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, toRefs } from 'vue'
 
-type BaseButtonType = 'primary' | 'text' | 'image'
+type BaseButtonType = 'primary' | 'text' | 'icon' | 'outline'
 
 interface BaseButtonProps {
   type?: BaseButtonType
   disabled?: boolean
+  reverse?: boolean
 }
 
-const props = defineProps<BaseButtonProps>()
+const props = withDefaults(defineProps<BaseButtonProps>(), {
+  type: 'outline'
+})
 
-const typeSelector = computed(() => (type: BaseButtonType | undefined) => {
-  if (type === 'image') {
-    return `btn-${type}`
+const { type, disabled, reverse } = toRefs(props)
+
+const typeSelector = computed(() => {
+  if (type.value === 'icon') {
+    return `btn-${type.value}`
+  } else {
+    return `btn-not-icon btn-${type.value}`
   }
-
-  if (type) {
-    return `btn-not-image btn-${type}`
-  }
-
-  return 'btn-not-image btn-base'
 })
 </script>
 
 <template>
-  <button class="btn" :class="[typeSelector(props.type)]" :disabled="props.disabled">
+  <button class="btn" :class="[typeSelector, { reverse }]" :disabled="disabled">
     <div class="text" v-if="$slots.default">
       <slot></slot>
     </div>
@@ -48,8 +49,8 @@ const typeSelector = computed(() => (type: BaseButtonType | undefined) => {
   opacity: .92
 
 %btn-primary-focus
+  @extend %opacity-092
   box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, .15)
-  opacity: .92
 
 .btn
   display: flex
@@ -64,7 +65,7 @@ const typeSelector = computed(() => (type: BaseButtonType | undefined) => {
   cursor: pointer
   font-weight: 500
 
-.btn-base
+.btn-outline
   background: none
   border: 1px solid $neutral-variant-50
   color: $primary
@@ -128,11 +129,11 @@ const typeSelector = computed(() => (type: BaseButtonType | undefined) => {
   &:disabled:focus
     background: none
 
-.btn-not-image
+.btn-not-icon
   padding: 8px
   width: 124px
 
-.btn-image
+.btn-icon
   padding: 4px
   width: 40px
   background: $primary
@@ -163,4 +164,7 @@ const typeSelector = computed(() => (type: BaseButtonType | undefined) => {
   display: flex
   justify-content: center
   flex: 1 1 auto
+
+.reverse
+  flex-direction: row-reverse
 </style>
