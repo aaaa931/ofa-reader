@@ -36,7 +36,7 @@ const typeSelector = computed(() => {
 </template>
 
 <style scoped lang="sass">
-@import "../assets/_variables"
+@import "@/assets/_variables"
 
 %primary-008
   background: rgba($primary, .08)
@@ -56,7 +56,7 @@ const typeSelector = computed(() => {
   display: flex
   justify-content: space-between
   align-items: center
-  gap: 8px
+  gap: .5rem
   box-sizing: border-box
   border-radius: 10px
   flex-shrink: 0
@@ -130,11 +130,11 @@ const typeSelector = computed(() => {
     background: none
 
 .btn-not-icon
-  padding: 8px
+  padding: .5rem
   width: 124px
 
 .btn-icon
-  padding: 4px
+  padding: .25rem
   width: 40px
   background: $primary
   color: $on-primary
@@ -161,9 +161,11 @@ const typeSelector = computed(() => {
   align-items: center
 
 .text
-  display: flex
-  justify-content: center
-  flex: 1 1 auto
+  text-align: center
+  width: 100%
+  overflow: hidden
+  white-space: nowrap
+  text-overflow: ellipsis
 
 .reverse
   flex-direction: row-reverse
