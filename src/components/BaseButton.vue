@@ -38,20 +38,6 @@ const typeSelector = computed(() => {
 <style scoped lang="sass">
 @import "@/assets/_variables"
 
-%primary-008
-  background: rgba($primary, .08)
-
-%disabled
-  color: rgba($on-surface, .38)
-  cursor: not-allowed
-
-%opacity-092
-  opacity: .92
-
-%btn-primary-focus
-  @extend %opacity-092
-  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, .15)
-
 .btn
   display: flex
   justify-content: space-between
@@ -71,10 +57,10 @@ const typeSelector = computed(() => {
   color: $primary
 
   &:hover
-    @extend %primary-008
+    @extend %primary-hover
 
   &:focus
-    @extend %primary-008
+    @extend %primary-hover
 
   &:disabled
     @extend %disabled
@@ -115,10 +101,10 @@ const typeSelector = computed(() => {
   color: $primary
 
   &:hover
-    @extend %primary-008
+    @extend %primary-hover
 
   &:focus
-    @extend %primary-008
+    @extend %primary-hover
 
   &:disabled
     @extend %disabled
@@ -141,10 +127,10 @@ const typeSelector = computed(() => {
   border: none
 
   &:hover
-    @extend %opacity-092
+    @extend %opacity-hover
 
   &:focus
-    @extend %opacity-092
+    @extend %opacity-hover
 
   &:disabled
     @extend %disabled
