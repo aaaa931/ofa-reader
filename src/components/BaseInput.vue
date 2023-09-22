@@ -8,10 +8,12 @@ interface BaseInputProps {
   tip?: string
 }
 
-const props = defineProps<BaseInputProps>()
-const emit = defineEmits<{
+interface BaseInputEmit {
   (e: 'update:modelValue', value: string): void
-}>()
+}
+
+const props = defineProps<BaseInputProps>()
+const emit = defineEmits<BaseInputEmit>()
 const { disabled } = toRefs(props)
 
 const handleInput = (e: Event) => {
@@ -27,6 +29,7 @@ const handleInput = (e: Event) => {
         @input="handleInput"
         :disabled="disabled"
         class="input"
+        v-bind="$attrs"
       />
       <div class="icon">
         <slot></slot>

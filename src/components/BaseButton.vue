@@ -57,10 +57,10 @@ const typeSelector = computed(() => {
   color: $primary
 
   &:hover
-    @extend %primary-008
+    @extend %primary-hover
 
   &:focus
-    @extend %primary-008
+    @extend %primary-hover
 
   &:disabled
     @extend %disabled
@@ -101,10 +101,10 @@ const typeSelector = computed(() => {
   color: $primary
 
   &:hover
-    @extend %primary-008
+    @extend %primary-hover
 
   &:focus
-    @extend %primary-008
+    @extend %primary-hover
 
   &:disabled
     @extend %disabled
@@ -127,10 +127,10 @@ const typeSelector = computed(() => {
   border: none
 
   &:hover
-    @extend %opacity-092
+    @extend %opacity-hover
 
   &:focus
-    @extend %opacity-092
+    @extend %opacity-hover
 
   &:disabled
     @extend %disabled
