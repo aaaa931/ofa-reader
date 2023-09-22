@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { toRefs, type Ref } from 'vue'
 
+defineOptions({
+  inheritAttrs: false
+})
+
 interface BaseInputProps {
   modelValue: Ref<string>
   disabled?: boolean
