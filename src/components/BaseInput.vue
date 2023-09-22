@@ -1,77 +1,64 @@
 <script setup lang="ts">
-import type { Ref } from 'vue'
+import { toRefs, type Ref } from 'vue'
 
 interface BaseInputProps {
   modelValue: Ref<string>
   disabled?: boolean
   error?: boolean
-  label?: string
+  tip?: string
 }
 
 const props = defineProps<BaseInputProps>()
-const emit = defineEmits(['update:modelValue', 'submit'])
-const { disabled } = props
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void
+}>()
+const { disabled } = toRefs(props)
 
-const updateModelValue = (e: Event) => {
+const handleInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLInputElement).value)
 }
-
-const submit = () => emit('submit')
 </script>
 
 <template>
-  <form class="container" :class="{ error, disabled }" @submit.prevent="submit">
+  <div :class="{ error, disabled }">
     <div class="input-container">
       <input
         :value="modelValue"
-        @input="updateModelValue"
+        @input="handleInput"
         :disabled="disabled"
+        class="input"
       />
-      <button class="icon">
+      <div class="icon">
         <slot></slot>
-      </button>
+      </div>
     </div>
-    <div class="tip">{{ label }}</div>
-  </form>
+    <div class="tip" v-if="tip">{{ tip }}</div>
+  </div>
 </template>
 
 <style scoped lang="sass">
 @import "@/assets/_variables"
 
-%error
-  color: $error
-
-%disabled
-  cursor: not-allowed
-  color: rgba($on-surface, .38) !important
-
-.container
-  display: flex
-  flex-direction: column
-
 .input-container
-  width: 210px
+  min-width: 210px
   height: 56px
   border: 1px solid $on-surface
   border-radius: 4px
   display: flex
   padding: .25rem 0 .25rem 1rem
-  transition: 1s all
+  transition: .3s all
 
-  &:has(input:focus):focus
+  &:has(.input:focus)
     border: 2px solid $primary
-
-.focus
-  border: 2px solid $primary
 
 .error .input-container
   border: 2px solid $error
 
 .error .icon
-  @extend %error
+  color: $error
 
 .error .tip
-  @extend %error
+  color: $error
 
 .disabled .input-container
   border-color: rgba($on-surface, .12)
@@ -79,14 +66,14 @@ const submit = () => emit('submit')
 .disabled input
   @extend %disabled
 
-.disabled .delete
+.disabled .icon
   @extend %disabled
 
 .disabled .tip
   cursor: not-allowed
   color: rgba($on-surface, .12)
 
-.container input
+.input
   padding: .75rem 0
   border: none
   outline: none
@@ -95,9 +82,6 @@ const submit = () => emit('submit')
   background: none
 
 .icon
-  background: none
-  border: none
-  cursor: pointer
   padding: .5rem
   line-height: 1
   font-size: 24px

@@ -110,3 +110,17 @@ $on-surface: $neutral-10
 $surface-variant: $neutral-variant-90
 $on-surface-variant: $neutral-variant-30
 $outline: $neutral-variant-50
+
+%primary-008
+  background: rgba($primary, .08)
+
+%opacity-092
+  opacity: .92
+
+%btn-primary-focus
+  @extend %opacity-092
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, .15)
+
+%disabled
+  cursor: not-allowed
+  color: rgba($on-surface, .38) !important
