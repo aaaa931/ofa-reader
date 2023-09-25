@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue'
 
-type BaseButtonType = 'primary' | 'text' | 'icon' | 'outline'
+type BaseButtonType = 'primary' | 'text' | 'icon' | 'outline' | 'base-icon'
 
 interface BaseButtonProps {
   type?: BaseButtonType
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<BaseButtonProps>(), {
 const { type, disabled, reverse } = toRefs(props)
 
 const typeSelector = computed(() => {
-  if (type.value === 'icon') {
+  if (type.value === 'icon' || type.value === 'base-icon') {
     return `btn-${type.value}`
   } else {
     return `btn-not-icon btn-${type.value}`
@@ -122,8 +122,28 @@ const typeSelector = computed(() => {
 .btn-icon
   padding: .25rem
   width: 40px
-  background: $primary
-  color: $on-primary
+  border: none
+
+  &:hover
+    @extend %opacity-hover
+
+  &:focus
+    @extend %opacity-hover
+
+  &:disabled
+    @extend %disabled
+    background: rgba($on-surface, .12)
+
+  &:disabled:hover
+    opacity: 1
+
+  &:disabled:focus
+    opacity: 1
+
+.btn-base-icon
+  padding: .25rem
+  width: 40px
+  background: none
   border: none
 
   &:hover
