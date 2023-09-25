@@ -25,7 +25,7 @@ const handleClick = () => emit('click')
   </BaseButton>
 </template>
 
-<style lang="sass">
+<style scoped lang="sass">
 @import '@/assets/_variables'
 
 .notification

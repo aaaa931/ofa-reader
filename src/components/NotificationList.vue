@@ -48,7 +48,7 @@ const cancel = async (id: number) => {
   </div>
 </template>
 
-<style lang="sass">
+<style scoped lang="sass">
 @import '@/assets/_variables'
 
 .notification-container
