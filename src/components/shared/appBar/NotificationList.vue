@@ -6,7 +6,7 @@ import type {
   Notification
 } from '@/interface/notification'
 
-import BaseButton from '@/components/BaseButton.vue'
+import BaseButton from '@/components/shared/base/BaseButton.vue'
 
 const notificationStore = useNotificationStore()
 const { remove } = notificationStore
@@ -51,9 +51,6 @@ const isProgress = (notification: Notification) => {
 </template>
 
 <style scoped lang="sass">
-@import '@/assets/_variables'
-@import '@/assets/global'
-
 .notification-container
   position: absolute
   right: 0

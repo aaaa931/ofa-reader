@@ -36,9 +36,6 @@ const typeSelector = computed(() => {
 </template>
 
 <style scoped lang="sass">
-@import '@/assets/_variables'
-@import '@/assets/global'
-
 .btn
   display: flex
   justify-content: space-between

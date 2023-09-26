@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRefs } from 'vue'
 
-import BaseButton from '@/components/BaseButton.vue'
+import BaseButton from '@/components/shared/base/BaseButton.vue'
 
 interface NotificationButtonProps {
   icon: string
@@ -27,8 +27,6 @@ const handleClick = () => emit('click')
 </template>
 
 <style scoped lang="sass">
-@import '@/assets/_variables'
-
 .notification
   position: relative
 

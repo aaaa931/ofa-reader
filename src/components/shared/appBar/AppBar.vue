@@ -3,8 +3,8 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useNotificationStore } from '@/stores/notification'
 
-import NotificationButton from '@/components/NotificationButton.vue'
-import NotificationList from '@/components/NotificationList.vue'
+import NotificationButton from '@/components/shared/appBar/NotificationButton.vue'
+import NotificationList from '@/components/shared/appBar/NotificationList.vue'
 
 import logo from '@/assets/logo.png'
 
@@ -18,7 +18,7 @@ const toggleNotificationOpen = () =>
 </script>
 
 <template>
-  <div class="container">
+  <header class="container">
     <img :src="logo" alt="logo" class="logo" />
     <NotificationButton
       icon="bell"
@@ -26,12 +26,10 @@ const toggleNotificationOpen = () =>
       :hasNotification="notifications.length > 0"
     />
     <NotificationList v-if="notificationOpen" />
-  </div>
+  </header>
 </template>
 
 <style scoped lang="sass">
-@import "@/assets/_variables"
-
 .container
   display: flex
   width: 100vw

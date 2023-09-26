@@ -44,8 +44,6 @@ const handleInput = (e: Event) => {
 </template>
 
 <style scoped lang="sass">
-@import "@/assets/_variables"
-
 .input-container
   min-width: 210px
   height: 56px
