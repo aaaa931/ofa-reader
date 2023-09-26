@@ -169,9 +169,7 @@ const typeSelector = computed(() => {
 .text
   text-align: center
   width: 100%
-  overflow: hidden
-  white-space: nowrap
-  text-overflow: ellipsis
+  @extend %ellipsis
 
 .reverse
   flex-direction: row-reverse

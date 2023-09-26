@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import { toRefs } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-
 import { useNotificationStore } from '@/stores/notification'
+import type {
+  BookLoadingNotification,
+  Notification
+} from '@/interface/notification'
 
 import BaseButton from '@/components/BaseButton.vue'
 
-interface NotificationListProps {
-  notificationOpen: boolean
-}
-
-const props = defineProps<NotificationListProps>()
-const { notificationOpen } = toRefs(props)
-
 const notificationStore = useNotificationStore()
-const { cancel } = notificationStore
+const { remove } = notificationStore
 const { notifications } = storeToRefs(notificationStore)
+
+const isProgress = computed(() => (notification: Notification) => {
+  if ('payload' in notification) return notification.payload.progress >= 0
+  return false
+})
 </script>
 
 <template>
-  <div class="notification-container" v-if="notificationOpen">
+  <div class="notification-container">
     <div
       class="notification-item"
       v-for="notification in notifications"
@@ -30,13 +31,20 @@ const { notifications } = storeToRefs(notificationStore)
         <p class="notification-title">{{ notification.title }}</p>
         <BaseButton
           type="base-icon"
-          class="notification-cancel"
-          v-if="notification.progress"
+          class="notification-remove"
+          v-if="isProgress(notification)"
         >
-          <span class="mdi mdi-close" @click="cancel(notification.id)" />
+          <span class="mdi mdi-close" @click="remove(notification.id)" />
         </BaseButton>
-        <div class="progress" v-if="notification.progress">
-          <div class="bar" :style="{ width: `${notification.progress}%` }" />
+        <div class="progress" v-if="isProgress(notification)">
+          <div
+            class="bar"
+            :style="{
+              width: `${
+                (notification as BookLoadingNotification).payload.progress
+              }%`
+            }"
+          />
         </div>
       </div>
     </div>
@@ -64,16 +72,17 @@ const { notifications } = storeToRefs(notificationStore)
 
 .notification-info
   display: grid
-  grid-template-columns: 1fr 1fr 1fr
+  grid-template-columns: 3fr 1fr
   grid-template-rows: 2fr 1fr
   width: 100%
 
 .notification-title
   margin-top: .25rem
-  grid-area: 1/1/1/3
+  grid-area: 1/1/1/2
+  @extend %ellipsis
 
-.notification-cancel
-  grid-area: 1/3/1/4
+.notification-remove
+  grid-area: 1/2/1/3
   justify-self: right
 
 .cover
@@ -87,7 +96,7 @@ const { notifications } = storeToRefs(notificationStore)
   @extend %icon
 
 .progress
-  grid-area: 2/1/2/4
+  grid-area: 2/1/2/3
   align-self: center
   border-radius: 10px
   border: 1px solid $outline

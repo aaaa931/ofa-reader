@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useNotificationStore } from '@/stores/notification'
 
 import NotificationButton from '@/components/NotificationButton.vue'
 import NotificationList from '@/components/NotificationList.vue'
-import { useNotificationStore } from '@/stores/notification'
 
 import logo from '@/assets/logo.png'
 
@@ -25,7 +25,7 @@ const toggleNotificationOpen = () =>
       @click="toggleNotificationOpen"
       :hasNotification="notifications.length > 0"
     />
-    <NotificationList :notificationOpen="notificationOpen" />
+    <NotificationList v-if="notificationOpen" />
   </div>
 </template>
 
@@ -44,5 +44,4 @@ const toggleNotificationOpen = () =>
 .logo
   height: 40px
   width: auto
-  max-width: 100%
 </style>

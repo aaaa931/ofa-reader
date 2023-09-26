@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+
 import type { Notification } from '@/interface/notification'
 
 export const useNotificationStore = defineStore('notification', () => {
@@ -9,7 +10,7 @@ export const useNotificationStore = defineStore('notification', () => {
     notifications.value.push(notification)
   }
 
-  const cancel = async (id: number) => {
+  const remove = async (id: number) => {
     setTimeout(() => {
       if (notifications.value) {
         notifications.value = notifications.value.filter(
@@ -19,5 +20,5 @@ export const useNotificationStore = defineStore('notification', () => {
     }, 0)
   }
 
-  return { notifications, add, cancel }
+  return { notifications, add, remove }
 })
