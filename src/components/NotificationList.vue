@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useNotificationStore } from '@/stores/notification'
 import type {
@@ -13,10 +12,10 @@ const notificationStore = useNotificationStore()
 const { remove } = notificationStore
 const { notifications } = storeToRefs(notificationStore)
 
-const isProgress = computed(() => (notification: Notification) => {
+const isProgress = (notification: Notification) => {
   if ('payload' in notification) return notification.payload.progress >= 0
   return false
-})
+}
 </script>
 
 <template>
@@ -28,7 +27,7 @@ const isProgress = computed(() => (notification: Notification) => {
     >
       <img :src="notification.cover" alt="cover" class="cover" />
       <div class="notification-info">
-        <p class="notification-title">{{ notification.title }}</p>
+        <p class="notification-title ellipsis">{{ notification.title }}</p>
         <BaseButton
           type="base-icon"
           class="notification-remove"
@@ -72,14 +71,13 @@ const isProgress = computed(() => (notification: Notification) => {
 
 .notification-info
   display: grid
-  grid-template-columns: 3fr 1fr
+  grid-template-columns: 1fr 1fr
   grid-template-rows: 2fr 1fr
   width: 100%
 
 .notification-title
   margin-top: .25rem
   grid-area: 1/1/1/2
-  @extend %ellipsis
 
 .notification-remove
   grid-area: 1/2/1/3

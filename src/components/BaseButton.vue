@@ -26,7 +26,7 @@ const typeSelector = computed(() => {
 
 <template>
   <button class="btn" :class="[typeSelector, { reverse }]" :disabled="disabled">
-    <div class="text" v-if="$slots.default">
+    <div class="text ellipsis" v-if="$slots.default">
       <slot></slot>
     </div>
     <div class="icon" v-if="$slots.icon">
@@ -169,7 +169,6 @@ const typeSelector = computed(() => {
 .text
   text-align: center
   width: 100%
-  @extend %ellipsis
 
 .reverse
   flex-direction: row-reverse
