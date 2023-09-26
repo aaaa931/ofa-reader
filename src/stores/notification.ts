@@ -18,7 +18,7 @@ export const useNotificationStore = defineStore('notification', () => {
     notifications.value.push({
       ...notification,
       id
-    } as SimpleNotification<undefined>)
+    } as SimpleNotification)
   }
 
   const remove = async (id: number) => {
