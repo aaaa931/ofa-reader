@@ -1,15 +1,24 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { AddNotification, Notification } from '@/interface/notification'
+import type {
+  Notification,
+  CreationNotification,
+  SimpleNotification
+} from '@/interface/notification'
 
 export const useNotificationStore = defineStore('notification', () => {
-  const notifications = ref<Notification[]>([])
+  const notifications = ref<Notification<object>[]>([])
 
-  const add = async (notification: AddNotification) => {
+  const add = async <T extends object>(
+    notification: CreationNotification<T>
+  ) => {
     const id =
       Math.max(...notifications.value.map((notification) => notification.id)) +
       1
-    notifications.value.push({ id, ...notification })
+    notifications.value.push({
+      ...notification,
+      id
+    } as SimpleNotification<undefined>)
   }
 
   const remove = async (id: number) => {

@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useNotificationStore } from '@/stores/notification'
-import type {
-  BookLoadingNotification,
-  Notification
-} from '@/interface/notification'
+import type { ProgressiveNotification } from '@/interface/notification'
 
 import BaseButton from '@/components/shared/base/BaseButton.vue'
 
@@ -12,9 +9,8 @@ const notificationStore = useNotificationStore()
 const { remove } = notificationStore
 const { notifications } = storeToRefs(notificationStore)
 
-const isProgress = (notification: Notification) => {
-  if ('payload' in notification) return notification.payload.progress >= 0
-  return false
+const isInProgress = (notification: ProgressiveNotification) => {
+  return !!notification.progress
 }
 </script>
 
@@ -31,17 +27,18 @@ const isProgress = (notification: Notification) => {
         <BaseButton
           type="base-icon"
           class="notification-remove"
-          v-if="isProgress(notification)"
+          v-if="notification.type === 'progress' && isInProgress(notification)"
         >
           <span class="mdi mdi-close" @click="remove(notification.id)" />
         </BaseButton>
-        <div class="progress" v-if="isProgress(notification)">
+        <div
+          class="progress"
+          v-if="notification.type === 'progress' && isInProgress(notification)"
+        >
           <div
             class="bar"
             :style="{
-              width: `${
-                (notification as BookLoadingNotification).payload.progress
-              }%`
+              width: `${notification.progress}%`
             }"
           />
         </div>

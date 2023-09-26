@@ -1,32 +1,34 @@
-import type { BookLoadingPayload } from '@/interface/book'
+export type NotificationType = 'progress' | 'description' | 'simple'
 
-interface BaseNotification {
+interface BaseNotification<T> {
   id: number
   cover: string
   title: string
+  type: NotificationType
   cancel?: () => void
+  payload?: T
 }
 
-export interface BookLoadingNotification extends BaseNotification {
-  payload: BookLoadingPayload
+export interface SimpleNotification<T = object> extends BaseNotification<T> {
+  type: 'simple'
 }
 
-export interface AddBookLoadingNotification {
-  cover: string
-  title: string
-  cancel?: () => void
-  payload: BookLoadingPayload
+export interface ProgressiveNotification<T = object>
+  extends BaseNotification<T> {
+  type: 'progress'
+  progress: number
 }
 
-export interface InfoNotification extends BaseNotification {
-  info: string
+export interface DescriptionNotification<T = object>
+  extends BaseNotification<T> {
+  type: 'description'
+  description: string
 }
 
-export interface AddInfoNotification {
-  cover: string
-  title: string
-  info: string
-}
+export type Notification<T = object> =
+  | ProgressiveNotification<T>
+  | DescriptionNotification<T>
+  | SimpleNotification<T>
 
-export type Notification = BookLoadingNotification | InfoNotification
-export type AddNotification = AddBookLoadingNotification | AddInfoNotification
+export interface CreationNotification<T = object>
+  extends Omit<BaseNotification<T>, 'id'> {}

@@ -1,19 +1,49 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/stores/notification'
-import type { AddBook } from '@/interface/book'
+import type { Book } from '@/interface/book'
+import type { CreationNotification } from '@/interface/notification'
 
 export const useBookStore = defineStore('book', () => {
   const notificationStore = useNotificationStore()
   const { add, remove } = notificationStore
+  const books = ref<Book[] | null>(null)
 
-  const upload = async (book: AddBook) => {
+  const upload = async (book: Book, cancelHandler: () => void) => {
     setTimeout(() => {
-      const { title, cover } = book
-      const bookId = 0
+      const { title, cover, id } = book
       const progress = 0
+      const notification: CreationNotification<object> = {
+        title,
+        cover,
+        type: 'progress',
+        cancel: cancelHandler,
+        payload: {
+          bookId: id,
+          progress
+        }
+      }
 
-      add({ title, cover, payload: { bookId, progress } })
+      add(notification)
+    }, 0)
+  }
+
+  const download = async (book: Book, cancelHandler: () => void) => {
+    setTimeout(() => {
+      const { title, cover, id } = book
+      const progress = 0
+      const notification: CreationNotification<object> = {
+        title,
+        cover,
+        type: 'progress',
+        cancel: cancelHandler,
+        payload: {
+          bookId: id,
+          progress
+        }
+      }
+
+      add(notification)
     }, 0)
   }
 
@@ -23,5 +53,5 @@ export const useBookStore = defineStore('book', () => {
     }, 0)
   }
 
-  return { upload, cancel }
+  return { books, download, upload, cancel }
 })
