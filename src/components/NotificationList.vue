@@ -1,32 +1,25 @@
 <script setup lang="ts">
 import { toRefs } from 'vue'
-import { useNotificationsStore } from '@/stores/notifications'
 import { storeToRefs } from 'pinia'
+
+import { useNotificationStore } from '@/stores/notification'
+
 import BaseButton from '@/components/BaseButton.vue'
 
 interface NotificationListProps {
-  open: boolean
+  notificationOpen: boolean
 }
 
 const props = defineProps<NotificationListProps>()
-const { open } = toRefs(props)
+const { notificationOpen } = toRefs(props)
 
-const notificationStore = useNotificationsStore()
+const notificationStore = useNotificationStore()
+const { cancel } = notificationStore
 const { notifications } = storeToRefs(notificationStore)
-
-const cancel = async (id: number) => {
-  setTimeout(() => {
-    if (notifications.value) {
-      notifications.value = notifications.value.filter(
-        (notification) => notification.id !== id
-      )
-    }
-  }, 0)
-}
 </script>
 
 <template>
-  <div class="notification-container" v-if="open">
+  <div class="notification-container" v-if="notificationOpen">
     <div
       class="notification-item"
       v-for="notification in notifications"
@@ -34,13 +27,15 @@ const cancel = async (id: number) => {
     >
       <img :src="notification.cover" alt="cover" class="cover" />
       <div class="notification-info">
-        <div class="flex">
-          <p>{{ notification.title }}</p>
-          <BaseButton type="base-icon">
-            <span class="mdi mdi-close" @click="cancel(notification.id)" />
-          </BaseButton>
-        </div>
-        <div class="progress">
+        <p class="notification-title">{{ notification.title }}</p>
+        <BaseButton
+          type="base-icon"
+          class="notification-cancel"
+          v-if="notification.progress"
+        >
+          <span class="mdi mdi-close" @click="cancel(notification.id)" />
+        </BaseButton>
+        <div class="progress" v-if="notification.progress">
           <div class="bar" :style="{ width: `${notification.progress}%` }" />
         </div>
       </div>
@@ -56,7 +51,7 @@ const cancel = async (id: number) => {
   right: 0
   top: 56px
   padding: 0 .5rem .5rem .5rem
-  min-width: 400px
+  width: 400px
   height: 500px
   overflow-y: auto
   @extend %app-bar
@@ -68,15 +63,18 @@ const cancel = async (id: number) => {
   border-bottom: 1px solid $outline
 
 .notification-info
-  display: flex
-  flex-direction: column
-  justify-content: space-between
+  display: grid
+  grid-template-columns: 1fr 1fr 1fr
+  grid-template-rows: 2fr 1fr
   width: 100%
 
-.flex
-  display: flex
-  justify-content: space-between
-  margin-bottom: .75rem
+.notification-title
+  margin-top: .25rem
+  grid-area: 1/1/1/3
+
+.notification-cancel
+  grid-area: 1/3/1/4
+  justify-self: right
 
 .cover
   width: 40px
@@ -89,11 +87,15 @@ const cancel = async (id: number) => {
   @extend %icon
 
 .progress
+  grid-area: 2/1/2/4
+  align-self: center
   border-radius: 10px
   border: 1px solid $outline
   width: 100%
+  overflow: hidden
 
 .bar
   height: 8px
   background: $primary
+  border-radius: 10px
 </style>

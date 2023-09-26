@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import BaseButton from './BaseButton.vue'
 import { toRefs } from 'vue'
+
+import BaseButton from '@/components/BaseButton.vue'
 
 interface NotificationButtonProps {
   icon: string
-  alert: boolean
+  hasNotification: boolean
 }
 
 interface NotificationButtonEmit {
@@ -21,7 +22,7 @@ const handleClick = () => emit('click')
 <template>
   <BaseButton type="base-icon" class="notification" @click="handleClick">
     <span :class="['mdi', `mdi-${icon}`]" />
-    <span class="mdi mdi-circle-medium" v-if="alert" />
+    <span class="mdi mdi-circle-medium" v-if="hasNotification" />
   </BaseButton>
 </template>
 
@@ -30,8 +31,6 @@ const handleClick = () => emit('click')
 
 .notification
   position: relative
-  background: none
-  border: none
 
 .mdi-circle-medium
   font-size: 32px

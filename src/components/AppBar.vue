@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import logo from '@/assets/logo.png'
-import NotificationButton from '@/components/NotificationButton.vue'
-import NotificationList from '@/components/NotificationList.vue'
-import { computed, ref } from 'vue'
-import { useNotificationsStore } from '@/stores/notifications'
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
-const notificationStore = useNotificationsStore()
+import NotificationButton from '@/components/NotificationButton.vue'
+import NotificationList from '@/components/NotificationList.vue'
+import { useNotificationStore } from '@/stores/notification'
+
+import logo from '@/assets/logo.png'
+
+const notificationStore = useNotificationStore()
 const { notifications } = storeToRefs(notificationStore)
 
-const open = ref(false)
+const notificationOpen = ref(false)
 
-const toggleOpen = () => (open.value = !open.value)
-
-const isAlert = computed(() => {
-  if (notifications.value) return true
-  return false
-})
+const toggleNotificationOpen = () =>
+  (notificationOpen.value = !notificationOpen.value)
 </script>
 
 <template>
   <div class="container">
     <img :src="logo" alt="logo" class="logo" />
-    <NotificationButton icon="bell" @click="toggleOpen" :alert="isAlert" />
-    <NotificationList :open="open" />
+    <NotificationButton
+      icon="bell"
+      @click="toggleNotificationOpen"
+      :hasNotification="notifications.length > 0"
+    />
+    <NotificationList :notificationOpen="notificationOpen" />
   </div>
 </template>
 
@@ -42,4 +44,5 @@ const isAlert = computed(() => {
 .logo
   height: 40px
   width: auto
+  max-width: 100%
 </style>
