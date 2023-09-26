@@ -52,6 +52,7 @@ const isProgress = (notification: Notification) => {
 
 <style scoped lang="sass">
 @import '@/assets/_variables'
+@import '@/assets/global'
 
 .notification-container
   position: absolute
@@ -71,7 +72,7 @@ const isProgress = (notification: Notification) => {
 
 .notification-info
   display: grid
-  grid-template-columns: 1fr 1fr
+  grid-template-columns: repeat(2, 1fr)
   grid-template-rows: 2fr 1fr
   width: 100%
 
