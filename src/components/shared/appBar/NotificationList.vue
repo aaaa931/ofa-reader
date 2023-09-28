@@ -82,7 +82,6 @@ const isInProgress = (notification: ProgressiveNotification) => {
   width: 40px
   height: 56px
   object-fit: cover
-  object-position: center center
 
 .mdi-close
   font-size: 32px

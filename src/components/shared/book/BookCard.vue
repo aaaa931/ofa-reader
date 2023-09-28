@@ -12,7 +12,7 @@ interface BookProps {
 
 interface BookEmit {
   (e: 'select', id: number): void
-  (e: 'open', id: number): void
+  (e: 'dbclick', id: number): void
   (e: 'actionClick', id: number): void
 }
 
@@ -26,7 +26,7 @@ const icons = {
 }
 
 const handleSelect = (id: number) => emit('select', id)
-const handleOpen = (id: number) => emit('open', id)
+const handleDbclick = (id: number) => emit('dbclick', id)
 const handleActionClick = (id: number) => emit('actionClick', id)
 </script>
 
@@ -35,7 +35,7 @@ const handleActionClick = (id: number) => emit('actionClick', id)
     class="container"
     :class="{ disabled }"
     @click="handleSelect(id)"
-    @dblclick="handleOpen(id)"
+    @dblclick="handleDbclick(id)"
   >
     <div class="cover-container">
       <img :src="cover" class="cover" />
