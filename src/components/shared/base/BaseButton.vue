@@ -121,6 +121,8 @@ const typeSelector = computed(() => {
   padding: .25rem
   width: 40px
   border: none
+  background: $primary
+  color: $on-primary
 
   &:hover
     @extend %opacity-hover
@@ -163,6 +165,8 @@ const typeSelector = computed(() => {
 .icon
   display: flex
   align-items: center
+  font-size: 32px
+  @extend %icon
 
 .text
   text-align: center
