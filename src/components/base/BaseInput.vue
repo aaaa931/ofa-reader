@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { toRefs, type Ref } from 'vue'
+import { toRefs } from 'vue'
 
 defineOptions({
   inheritAttrs: false
 })
 
 interface BaseInputProps {
-  modelValue: Ref<string>
+  modelValue: string
   disabled?: boolean
   error?: boolean
   tip?: string
@@ -14,6 +14,7 @@ interface BaseInputProps {
 
 interface BaseInputEmit {
   (e: 'update:modelValue', value: string): void
+  (e: 'action-click'): void
 }
 
 const props = defineProps<BaseInputProps>()
@@ -23,6 +24,8 @@ const { disabled } = toRefs(props)
 const handleInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLInputElement).value)
 }
+
+const handleActionClick = () => emit('action-click')
 </script>
 
 <template>
@@ -35,7 +38,7 @@ const handleInput = (e: Event) => {
         class="input"
         v-bind="$attrs"
       />
-      <div class="icon">
+      <div class="icon" @click="handleActionClick">
         <slot></slot>
       </div>
     </div>
@@ -46,12 +49,12 @@ const handleInput = (e: Event) => {
 <style scoped lang="sass">
 .input-container
   min-width: 210px
-  height: 56px
   border: 1px solid $on-surface
   border-radius: 4px
   display: flex
-  padding: .25rem 0 .25rem 1rem
+  padding: .5rem 0 .5rem 1rem
   transition: .3s all
+  align-items: center
 
   &:has(.input:focus)
     border: 2px solid $primary
@@ -88,9 +91,10 @@ const handleInput = (e: Event) => {
 
 .icon
   padding: .5rem
-  line-height: 1
   font-size: 24px
   transition: .3s all
+  cursor: pointer
+  @extend %icon
 
 .tip
   font-size: .75rem

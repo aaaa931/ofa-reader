@@ -2,7 +2,7 @@
 import { toRefs } from 'vue'
 import type { Book } from '@/interface/book'
 
-import BaseButton from '@/components/shared/base/BaseButton.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
 
 interface BookProps {
   book: Book
@@ -32,7 +32,7 @@ const handleActionClick = (id: number) => emit('actionClick', id)
 
 <template>
   <button
-    class="container"
+    class="book-container"
     :class="{ disabled }"
     @click="handleSelect(id)"
     @dblclick="handleDbclick(id)"
@@ -62,7 +62,7 @@ const handleActionClick = (id: number) => emit('actionClick', id)
 </template>
 
 <style scoped lang="sass">
-.container
+.book-container
   width: 156px
   transition: .3s all
   background: none

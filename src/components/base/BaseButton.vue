@@ -162,16 +162,17 @@ const typeSelector = computed(() => {
   &:disabled:focus
     opacity: 1
 
-.icon
+.btn .icon
   display: flex
   align-items: center
-  font-size: 32px
+  font-size: 1.5rem
+  color: inherit
   @extend %icon
 
-.text
+.btn .text
   text-align: center
   width: 100%
 
-.reverse
+.btn .reverse
   flex-direction: row-reverse
 </style>
