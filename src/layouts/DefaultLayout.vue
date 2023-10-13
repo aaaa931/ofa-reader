@@ -6,7 +6,9 @@ import AppBar from '@/components/shared/appBar/AppBar.vue'
   <div class="layout">
     <AppBar />
     <main class="main">
-      <RouterView />
+      <Transition name="fade">
+        <RouterView />
+      </Transition>
     </main>
   </div>
 </template>
