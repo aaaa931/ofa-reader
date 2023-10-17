@@ -5,11 +5,12 @@ import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
 import { formatNullableString } from '@/utils/string'
 import { formatDate } from '@/utils/date'
-import type { Book } from '@/interface/book'
+import type { Book, Chapter } from '@/interface/book'
 
 import BaseButton from '@/components/base/BaseButton.vue'
 import ChapterItem from '@/components/shared/book/ChapterItem.vue'
 import BaseImg from '@/components/base/BaseImg.vue'
+import BaseSkeleton from '@/components/base/BaseSkeleton.vue'
 import bookCompletedImg from '@/assets/book_completed.png'
 
 const route = useRoute()
@@ -22,27 +23,36 @@ const { books } = storeToRefs(bookStore)
 
 const book = ref<Book | null>(null)
 const isBookCompleted = ref(false)
+const loading = ref(true)
+const chapters = ref<Chapter[]>([])
 
 onMounted(() => {
   book.value = books.value?.find((book) => book.id === Number(id.value)) || null
-
+  loading.value = false
   if (!book.value) router.push('/404')
 })
 </script>
 
 <template>
   <div>
-    <div class="book-info" v-if="book">
-      <BaseImg :src="book.cover" />
+    <div class="book-info">
+      <BaseImg :src="book?.cover" v-if="!loading" />
+      <BaseSkeleton v-else height="100%" />
       <div class="book-metadata">
         <div class="book-pubdata">
-          <div>
-            <h1 class="title">{{ book.title }}</h1>
-            <p>作者：{{ formatNullableString(book.creator) }}</p>
-            <p>出版社：{{ formatNullableString(book.publisher) }}</p>
-            <p>出版日期：{{ formatDate(book.pubdate) }}</p>
-            <p class="language">
-              語言：{{ formatNullableString(book.language) }}
+          <div v-if="!loading">
+            <h1 class="title">{{ book?.title }}</h1>
+            <p>作者：{{ formatNullableString(book?.creator) }}</p>
+            <p>出版社：{{ formatNullableString(book?.publisher) }}</p>
+            <p>出版日期：{{ formatDate(book?.pubdate) }}</p>
+            <p>語言：{{ formatNullableString(book?.language) }}</p>
+          </div>
+          <div v-else class="book-pubdata__loading">
+            <h1 class="title">
+              <BaseSkeleton height="2.125rem" />
+            </h1>
+            <p v-for="i in 4" :key="i">
+              <BaseSkeleton />
             </p>
           </div>
           <BaseImg
@@ -51,14 +61,16 @@ onMounted(() => {
             v-if="isBookCompleted"
           />
         </div>
-        <div class="description" v-html="book.description" />
+        <div class="description" v-html="book?.description" v-if="!loading" />
+        <BaseSkeleton class="description" v-else />
       </div>
-      <p class="last-time" v-if="book.lastTime">
+      <p class="last-time" v-if="book?.lastTime">
         最後閱讀時間：{{ formatDate(book.lastTime) }}
       </p>
+      <BaseSkeleton v-if="loading" />
       <div class="actions">
-        <BaseButton type="primary">開始閱讀</BaseButton>
-        <BaseButton type="primary">
+        <BaseButton type="primary" :disabled="loading">開始閱讀</BaseButton>
+        <BaseButton type="primary" :disabled="loading">
           匯出
           <template #icon>
             <span class="mdi mdi-file" />
@@ -66,9 +78,10 @@ onMounted(() => {
         </BaseButton>
       </div>
     </div>
-    <div class="chapter-container">
+    <div class="chapter-container" v-if="!loading">
       <ChapterItem :chapters="chapters" />
     </div>
+    <BaseSkeleton v-else height="200px" />
   </div>
 </template>
 
@@ -94,17 +107,18 @@ onMounted(() => {
 .book-pubdata
   display: flex
   justify-content: space-between
+  margin-bottom: .5rem
+
+  &__loading
+    width: 300px
 
 .book-pubdata p
   margin-bottom: .5rem
 
-.book-pubdata .language
-  margin-bottom: 1rem
-
 .description
   flex: 1
   overflow: auto
-  padding-left: .5rem
+  margin-left: .5rem
 
 .description :deep(p)
   margin-bottom: 1rem
