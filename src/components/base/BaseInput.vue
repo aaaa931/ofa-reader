@@ -10,6 +10,8 @@ interface BaseInputProps {
   disabled?: boolean
   error?: boolean
   tip?: string
+  dense?: boolean
+  shrink?: boolean
 }
 
 interface BaseInputEmit {
@@ -29,7 +31,7 @@ const handleActionClick = () => emit('action-click')
 </script>
 
 <template>
-  <div :class="{ error, disabled }">
+  <div :class="{ disabled, error, dense, shrink }" class="input-wrapper">
     <div class="input-container">
       <input
         :value="modelValue"
@@ -38,7 +40,7 @@ const handleActionClick = () => emit('action-click')
         class="input"
         v-bind="$attrs"
       />
-      <div class="icon" @click="handleActionClick">
+      <div class="icon" @click="handleActionClick" v-if="!shrink">
         <slot></slot>
       </div>
     </div>
@@ -47,50 +49,30 @@ const handleActionClick = () => emit('action-click')
 </template>
 
 <style scoped lang="sass">
+.input-wrapper
+  width: 210px
+
 .input-container
-  min-width: 210px
   border: 1px solid $on-surface
   border-radius: 4px
   display: flex
-  padding: .5rem 0 .5rem 1rem
-  transition: .3s all
+  padding: .5rem .75rem .5rem 1rem
+  transition: .1s all
   align-items: center
 
   &:has(.input:focus)
     border: 2px solid $primary
 
-.error .input-container
-  border: 2px solid $error
-
-.error .icon
-  color: $error
-
-.error .tip
-  color: $error
-
-.disabled .input-container
-  border-color: rgba($on-surface, .12)
-
-.disabled input
-  @extend %disabled
-
-.disabled .icon
-  @extend %disabled
-
-.disabled .tip
-  cursor: not-allowed
-  color: rgba($on-surface, .12)
-
 .input
-  padding: .75rem 0
+  padding: .5rem 0
   border: none
   outline: none
   color: $on-surface
   width: 100%
   background: none
+  line-height: 1.5rem
 
 .icon
-  padding: .5rem
   font-size: 24px
   transition: .3s all
   cursor: pointer
@@ -101,4 +83,32 @@ const handleActionClick = () => emit('action-click')
   padding: .25rem 1rem
   color: $on-surface-variant
   transition: .3s all
+
+.error
+  .input-container
+    border: 2px solid $error
+  .icon
+    color: $error
+  .tip
+    color: $error
+
+.disabled
+  .input-container
+    border-color: rgba($on-surface, .12)
+  input
+    @extend %disabled
+  .icon
+    @extend %disabled
+  .tip
+    cursor: not-allowed
+    color: rgba($on-surface, .12)
+
+.dense
+  .input-container
+    padding: .25rem .5rem .25rem .5rem
+  input
+    padding: 0
+
+.shrink
+  width: 60px
 </style>
