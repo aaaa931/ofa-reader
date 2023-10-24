@@ -1,13 +1,20 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/stores/notification'
-import type { Book } from '@/interface/book'
+import type { Book, ReaderSetting } from '@/interface/book'
 import type { CreationNotification } from '@/interface/notification'
 
 export const useBookStore = defineStore('book', () => {
   const notificationStore = useNotificationStore()
   const { add, remove } = notificationStore
   const books = ref<Book[] | null>(null)
+  const readerSetting = ref<ReaderSetting>({
+    contents: false,
+    fontFamily: '',
+    lineHeight: '1.5',
+    displayMode: 'single',
+    pageWidth: '1000'
+  })
 
   const upload = async (book: Book, cancelHandler: () => void) => {
     setTimeout(() => {
@@ -53,5 +60,5 @@ export const useBookStore = defineStore('book', () => {
     }, 0)
   }
 
-  return { books, download, upload, cancel }
+  return { books, download, upload, cancel, readerSetting }
 })

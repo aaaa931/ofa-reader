@@ -1,3 +1,5 @@
+export * from './reader'
+
 export type BookType = 'local' | 'remote' | 'both'
 
 export interface Book {
