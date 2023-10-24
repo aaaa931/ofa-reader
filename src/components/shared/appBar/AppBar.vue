@@ -23,7 +23,9 @@ const toggleNotificationOpen = () =>
 <template>
   <header class="container">
     <div class="start-wrapper">
-      <img :src="logo" alt="logo" class="logo" />
+      <RouterLink to="/">
+        <img :src="logo" alt="logo" class="logo" />
+      </RouterLink>
       <template v-if="route.name === 'reader'">
         <div class="divider" />
         <ReaderHeader />
