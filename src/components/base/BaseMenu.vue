@@ -5,6 +5,8 @@ import { onKeyStroke, onClickOutside } from '@vueuse/core'
 interface BaseMenuProps {
   options: string[]
   modelValue: string
+  dense?: boolean
+  shrink?: boolean
 }
 
 const props = defineProps<BaseMenuProps>()
@@ -22,7 +24,6 @@ const menuRef = ref<HTMLElement | null>(null)
 const optionLength = computed(() => options.value.length)
 
 const toggleOpen = () => {
-  console.log('toggle')
   isOpened.value = !isOpened.value
   isFocused.value = !isFocused.value
 }
@@ -33,13 +34,11 @@ const handleFocus = () => {
 }
 
 const handleBlur = () => {
-  console.log('blur')
   isFocused.value = false
   isOpened.value = false
 }
 
 const handleClickOutSide = () => {
-  console.log('click out side')
   if (!isOpened.value) return
   isOpened.value = false
   isFocused.value = false
@@ -101,12 +100,13 @@ onKeyStroke('Enter', handleEnterClick)
   <div
     ref="menuRef"
     class="menu-wrapper"
-    :class="isFocused && 'menu-wrapper__focus'"
+    :class="{ 'menu-wrapper__focus': isFocused, dense, shrink }"
     @click="toggleOpen"
   >
     <input
       inputmode="none"
       readonly
+      class="ellipsis"
       @focus="handleFocus"
       @blur="handleBlur"
       v-model="modelValue"
@@ -120,7 +120,7 @@ onKeyStroke('Enter', handleEnterClick)
         v-if="isOpened"
       >
         <div
-          class="option-content"
+          class="option-content ellipsis"
           v-for="(option, index) in options"
           :key="index"
           :class="{
@@ -168,12 +168,22 @@ input
   top: calc( 100% + 2px )
   background-color: $surface-container
   box-shadow: $shadow-2
-  overflow: hidden
+  overflow: auto
+  max-height: 500px
   border-radius: 4px
+  z-index: 10
 
 .option-content
   padding: 1rem .75rem
   line-height: 1.5rem
   &:hover, &__selected
     background-color: $surface-container-high
+
+.dense
+  padding: .25rem .5rem
+  input
+    padding: 0
+
+.shrink
+  width: 100px
 </style>

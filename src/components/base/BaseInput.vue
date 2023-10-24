@@ -6,7 +6,7 @@ defineOptions({
 })
 
 interface BaseInputProps {
-  modelValue: string
+  modelValue?: string
   disabled?: boolean
   error?: boolean
   tip?: string
@@ -17,6 +17,7 @@ interface BaseInputProps {
 interface BaseInputEmit {
   (e: 'update:modelValue', value: string): void
   (e: 'action-click'): void
+  (e: 'change', value: string): void
 }
 
 const props = defineProps<BaseInputProps>()
@@ -28,6 +29,11 @@ const handleInput = (e: Event) => {
 }
 
 const handleActionClick = () => emit('action-click')
+
+const handleChange = (e: Event) => {
+  const value = (e.target as HTMLInputElement).value
+  emit('change', value)
+}
 </script>
 
 <template>
@@ -36,6 +42,7 @@ const handleActionClick = () => emit('action-click')
       <input
         :value="modelValue"
         @input="handleInput"
+        @change="handleChange"
         :disabled="disabled"
         class="input"
         v-bind="$attrs"
