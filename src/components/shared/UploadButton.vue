@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import BaseButton from '@/components/base/BaseButton.vue'
-import { ref } from 'vue'
+import { ref, toRefs } from 'vue'
+
+interface UploadButtonProps {
+  accept: string
+}
 
 interface UploadButtonEmit {
   (e: 'upload', files: FileList): void
 }
 
+const props = defineProps<UploadButtonProps>()
+const { accept } = toRefs(props)
 const emit = defineEmits<UploadButtonEmit>()
 
 const inputRef = ref<HTMLElement | null>(null)
@@ -29,7 +35,13 @@ const handleUpload = (e: Event) => {
       <span class="mdi mdi-plus-circle-outline" />
     </template>
   </BaseButton>
-  <input type="file" class="input" ref="inputRef" @change="handleUpload" />
+  <input
+    type="file"
+    class="input"
+    ref="inputRef"
+    @change="handleUpload"
+    :accept="accept"
+  />
 </template>
 
 <style scoped lang="sass">

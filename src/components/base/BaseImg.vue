@@ -1,12 +1,25 @@
 <script setup lang="ts">
+import { toRefs } from 'vue'
+
 defineOptions({
   inheritAttrs: false
 })
+
+interface BaseImgProps {
+  width: string
+  height: string
+}
+
+const props = withDefaults(defineProps<BaseImgProps>(), {
+  width: '100%',
+  height: 'auto'
+})
+const { width, height } = toRefs(props)
 </script>
 
 <template>
   <div class="img-container">
-    <img class="img" v-bind="$attrs" />
+    <img class="img" v-bind="$attrs" :style="{ width, height }" />
   </div>
 </template>
 
