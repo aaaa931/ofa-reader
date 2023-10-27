@@ -1,33 +1,76 @@
 <script setup lang="ts">
-import { onMounted, ref, toRefs } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { useBookStore } from '@/stores/book'
+import { type NavItem } from 'epubjs'
+import type { Book } from '@/interface/book'
 import { formatNullableString } from '@/utils/string'
 import { formatDate } from '@/utils/date'
-import type { Book, Chapter } from '@/interface/book'
+import { analyzeEpub } from '@/utils/epub'
 
 import BaseButton from '@/components/base/BaseButton.vue'
 import ChapterItem from '@/components/shared/book/ChapterItem.vue'
 import BaseImg from '@/components/base/BaseImg.vue'
 import BaseSkeleton from '@/components/base/BaseSkeleton.vue'
+import DownloadButton from '@/components/shared/DownloadButton.vue'
 import bookCompletedImg from '@/assets/book_completed.png'
+import { metadataTable } from '@/data/indexedDB/metadata'
+import { bookIntroTable } from '@/data/indexedDB/bookIntro'
+import { bookFileTable } from '@/data/indexedDB/bookFile'
 
 const route = useRoute()
-const { id } = toRefs(route.params)
+const uid = route.params.uid as string
 
 const router = useRouter()
 
-const bookStore = useBookStore()
-const { books } = storeToRefs(bookStore)
-
-const book = ref<Book | null>(null)
+const book = ref<Omit<Book, 'type'> | null>(null)
 const isBookCompleted = ref(false)
 const loading = ref(true)
-const chapters = ref<Chapter[]>([])
+const chapters = ref<NavItem[]>([])
+const epubInfo = ref<{ href: string; download: string } | null>(null)
 
-onMounted(() => {
-  book.value = books.value?.find((book) => book.uid === id.value) || null
+const flatChapter = (chapter: NavItem): NavItem[] => {
+  if (!chapter.subitems || !chapter.subitems.length) return [chapter]
+
+  let _chapters: NavItem[] = [chapter]
+  chapter.subitems.map((subitem) => _chapters.push(...flatChapter(subitem)))
+
+  return _chapters
+}
+
+const fetchData = async () => {
+  const localIntro = await bookIntroTable.getByUid(uid)
+  const localMetadata = await metadataTable.get(uid)
+  const localFile = await bookFileTable.get(uid)
+
+  if (localIntro) {
+    const { title, cover } = localIntro
+
+    book.value = {
+      uid,
+      title,
+      cover: cover ? URL.createObjectURL(cover) : undefined,
+      ...localMetadata?.data
+    }
+  }
+
+  if (localFile) {
+    epubInfo.value = {
+      href: URL.createObjectURL(localFile.epub),
+      download: localFile.epub.name
+    }
+    const { epub } = await analyzeEpub(localFile.epub)
+    const navigation = await epub.loaded.navigation
+    let _chapters: NavItem[] = []
+    navigation.forEach((chapter) => {
+      _chapters.push(...flatChapter(chapter))
+      return {}
+    })
+    chapters.value = _chapters
+  }
+}
+
+onMounted(async () => {
+  await fetchData()
   loading.value = false
   if (!book.value) router.push('/404')
 })
@@ -69,13 +112,10 @@ onMounted(() => {
       </p>
       <BaseSkeleton v-if="loading" />
       <div class="actions">
-        <BaseButton type="primary" :disabled="loading">開始閱讀</BaseButton>
-        <BaseButton type="primary" :disabled="loading">
-          匯出
-          <template #icon>
-            <span class="mdi mdi-file" />
-          </template>
-        </BaseButton>
+        <RouterLink :to="`/book/${book?.uid}`">
+          <BaseButton type="primary" :disabled="loading">開始閱讀</BaseButton>
+        </RouterLink>
+        <DownloadButton :href="epubInfo?.href" :download="epubInfo?.download" />
       </div>
     </div>
     <div class="chapter-container" v-if="!loading">

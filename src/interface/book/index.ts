@@ -24,10 +24,3 @@ export interface AddBook {
   title: string
   cover: string
 }
-
-export interface Chapter {
-  id: number
-  href: string
-  label: string
-  subItems?: Chapter[]
-}

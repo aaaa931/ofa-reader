@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import epub from 'epubjs'
+import { useRouter } from 'vue-router'
+import type { Book } from 'epubjs'
 import { useBookStore } from '@/stores/book'
 import { bookIntroTable, type AddBookIntro } from '@/data/indexedDB/bookIntro'
 import { bookFileTable } from '@/data/indexedDB/bookFile'
 import { metadataTable } from '@/data/indexedDB/metadata'
 import type { BookMetadata } from '@/utils/db'
+import { arrayBufferMD5 } from '@/utils/hash'
+import { EPUB_TYPE } from '@/utils/mimeType'
+import { analyzeEpub } from '@/utils/epub'
 
 import BaseInput from '@/components/base/BaseInput.vue'
 import BookCard from '@/components/shared/book/BookCard.vue'
 import UploadButton from '@/components/shared/UploadButton.vue'
-import { arrayBufferMD5 } from '@/utils/hash'
-import { EPUB_TYPE } from '@/utils/mimeType'
-
 const filter = ref('')
+
+const router = useRouter()
 
 const bookStore = useBookStore()
 const { books } = storeToRefs(bookStore)
@@ -30,9 +33,8 @@ const fetchData = async () => {
 
 const handleFilterClear = () => (filter.value = '')
 
-const getBookData = async (arrayBuffer: ArrayBuffer) => {
+const getBookData = async (arrayBuffer: ArrayBuffer, book: Book) => {
   const md5 = arrayBufferMD5(arrayBuffer)
-  const book = epub(arrayBuffer)
   const { title, description, creator, publisher, pubdate, language } =
     await book.loaded.metadata
   const metadata: BookMetadata = {
@@ -73,8 +75,8 @@ const handleUpload = async (files: FileList) => {
 
   if (file.type !== EPUB_TYPE) return
 
-  const arrayBuffer = await file.arrayBuffer()
-  const { md5, metadata, cover } = await getBookData(arrayBuffer)
+  const { arrayBuffer, epub } = await analyzeEpub(file)
+  const { md5, metadata, cover } = await getBookData(arrayBuffer, epub)
   const intros = await bookIntroTable.get()
   const findBook = intros.find((intro) => intro.md5 === md5)
 
@@ -84,6 +86,8 @@ const handleUpload = async (files: FileList) => {
 
   fetchData()
 }
+
+const handleSelect = (uid: string) => router.push(`/book/detail/${uid}`)
 
 const filteredBooks = computed(() => {
   if (!books.value) return []
@@ -105,7 +109,12 @@ onMounted(fetchData)
       <UploadButton @upload="handleUpload" :accept="EPUB_TYPE" />
     </div>
     <div class="book-list">
-      <BookCard v-for="book in filteredBooks" :key="book.uid" :book="book" />
+      <BookCard
+        v-for="book in filteredBooks"
+        :key="book.uid"
+        :book="book"
+        @select="handleSelect(book.uid)"
+      />
     </div>
   </div>
 </template>

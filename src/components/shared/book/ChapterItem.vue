@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import { toRefs } from 'vue'
-import type { Chapter } from '@/interface/book'
+import type { NavItem } from 'epubjs'
 
 import BaseButton from '@/components/base/BaseButton.vue'
 
 interface ChapterItemProps {
-  chapters: Chapter[]
-  recursionTime?: number
+  chapters: NavItem[]
 }
 
-const props = withDefaults(defineProps<ChapterItemProps>(), {
-  recursionTime: 0
-})
-const { chapters, recursionTime } = toRefs(props)
+const props = defineProps<ChapterItemProps>()
+const { chapters } = toRefs(props)
 </script>
 
 <template>
-  <div :style="{ marginLeft: `${recursionTime}rem` }">
+  <div>
     <div class="chapter-list">章節列表</div>
     <div class="chapter-item">
       <BaseButton
@@ -27,13 +24,6 @@ const { chapters, recursionTime } = toRefs(props)
         {{ chapter.label }}
       </BaseButton>
     </div>
-  </div>
-  <div v-for="chapter in chapters" :key="chapter.id">
-    <ChapterItem
-      v-if="chapter.subItems"
-      :chapters="chapter.subItems"
-      :recursion-time="recursionTime + 1"
-    />
   </div>
 </template>
 
@@ -46,4 +36,5 @@ const { chapters, recursionTime } = toRefs(props)
   padding: .5rem 1rem 1rem 1rem
   display: flex
   gap: 1rem
+  flex-wrap: wrap
 </style>
